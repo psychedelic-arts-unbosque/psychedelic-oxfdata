@@ -29,6 +29,10 @@ export default class AnkiApi {
     
             xhr.open('POST', "http://ec2-107-23-129-31.compute-1.amazonaws.com:8080/");
             xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
+            xhr.setRequestHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+            xhr.setRequestHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers,X-Access-Token,XKey,Authorization');
+            xhr.withCredentials = true;
             xhr.send(JSON.stringify({action, version, params}));
         });
     }

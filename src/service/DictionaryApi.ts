@@ -30,14 +30,20 @@ class DictionaryApi{
   
       var path_flashford = 'https://od-api.oxforddictionaries.com/api/v2/entries/en-us/'+word+'?fields=definitions'+domains+
       etymologies+examples+pronunciations+regions+registers+variantForms+'&strictMatch=false';
+      console.log(path_flashford);
+      const body = {
+        path_flashford: path_flashford
+      }
   
-      xhr.open("POST", "http://ec2-107-23-129-31.compute-1.amazonaws.com:3000/word");
-      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      xhr.open("POST", "http://localhost:3001/word");
+
+      xhr.setRequestHeader('Content-type', 'application/json');
       xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
       xhr.setRequestHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
       xhr.setRequestHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers,X-Access-Token,XKey,Authorization');
-
-      xhr.send(path_flashford);
+      xhr.withCredentials = true;
+      
+      xhr.send(JSON.stringify(body));
     
       xhr.onload = function (e) {
         if (xhr.readyState === 4) {
