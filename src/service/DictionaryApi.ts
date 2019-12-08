@@ -16,11 +16,6 @@ class DictionaryApi{
 
     static getEntryUsingApp(props: DictionaryProps){
 
-      var credentials_flashford = {
-        app_id: "85ec0698",
-        app_key: "e8b94bb451ee3ab953b729846ba63d3d",
-      };
-
       var xhr = new XMLHttpRequest();
       xhr.withCredentials = true;
   
@@ -35,17 +30,11 @@ class DictionaryApi{
   
       var path_flashford = 'https://od-api.oxforddictionaries.com/api/v2/entries/en-us/'+word+'?fields=definitions'+domains+
       etymologies+examples+pronunciations+regions+registers+variantForms+'&strictMatch=false';
-      console.log(path_flashford);
   
-      xhr.open("GET", path_flashford);
-    
-      xhr.setRequestHeader("app_id", credentials_flashford.app_id);
-      xhr.setRequestHeader("app_key", credentials_flashford.app_key);
-      xhr.setRequestHeader("Accept", "application/json");
-      xhr.setRequestHeader("Cache-Control", "no-cache");
-      xhr.setRequestHeader("Connection", "keep-alive");
+      xhr.open("POST", "http://ec2-107-23-129-31.compute-1.amazonaws.com:3000/word");
+      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
       
-      xhr.send(null);
+      xhr.send(path_flashford);
     
       xhr.onload = function (e) {
         if (xhr.readyState === 4) {
