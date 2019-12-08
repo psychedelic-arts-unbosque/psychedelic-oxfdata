@@ -33,7 +33,10 @@ class DictionaryApi{
   
       xhr.open("POST", "http://ec2-107-23-129-31.compute-1.amazonaws.com:3000/word");
       xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-      
+      xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
+      xhr.setRequestHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+      xhr.setRequestHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers,X-Access-Token,XKey,Authorization');
+
       xhr.send(path_flashford);
     
       xhr.onload = function (e) {
