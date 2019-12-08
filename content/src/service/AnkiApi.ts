@@ -27,7 +27,7 @@ export default class AnkiApi {
                 }
             });
     
-            xhr.open('POST', "http://ec2-107-23-129-31.compute-1.amazonaws.com:8080");
+            xhr.open('POST', "http://localhost:8765");
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.send(JSON.stringify({action, version, params}));
         });
