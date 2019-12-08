@@ -42,13 +42,8 @@ class DictionaryApi{
       xhr.setRequestHeader("app_id", credentials_flashford.app_id);
       xhr.setRequestHeader("app_key", credentials_flashford.app_key);
       xhr.setRequestHeader("Accept", "application/json");
-      xhr.setRequestHeader("User-Agent", "PostmanRuntime/7.19.0");
       xhr.setRequestHeader("Cache-Control", "no-cache");
-      xhr.setRequestHeader("Postman-Token", "5470f1a4-c681-42d4-b990-9d011bee1111,c57effb6-9025-4fb3-84b2-42efad18a055");
-      xhr.setRequestHeader("Host", "od-api.oxforddictionaries.com");
-      xhr.setRequestHeader("Accept-Encoding", "gzip, deflate");
       xhr.setRequestHeader("Connection", "keep-alive");
-      xhr.setRequestHeader("cache-control", "no-cache");
       
       xhr.send(null);
     
