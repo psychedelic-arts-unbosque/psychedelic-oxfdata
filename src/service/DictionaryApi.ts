@@ -35,7 +35,7 @@ class DictionaryApi{
         path_flashford: path_flashford
       }
   
-      xhr.open("POST", "http://ec2-107-23-129-31.compute-1.amazonaws.com:443/word");
+      xhr.open("POST", "https://ec2-107-23-129-31.compute-1.amazonaws.com:443/word");
 
       xhr.setRequestHeader('Content-type', 'application/json');
       xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
