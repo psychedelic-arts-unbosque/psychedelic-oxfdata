@@ -34,7 +34,7 @@ export default class AnkiApi {
     }
 
 
-    static async addNote({ Word, LexicalCategory, Meaning, Example, Audio, Image}: IAnkiNote){
+    static async addNote({ Word, LexicalCategory, Meaning, Example, Audio, Image, phoneticSpelling, phoneticStandart}: IAnkiNote){
         const audioRequest = Audio.includes("http") ? {
             "url": Audio,
             "filename": `${Audio}_${LexicalCategory}`,
@@ -52,7 +52,9 @@ export default class AnkiApi {
                 "Meaning": Meaning,
                 "Example": Example,
                 "Audio": Audio.includes("http") ? "" : Audio  ,
-                "Image": Image
+                "Image": Image,
+                "PhoneticSpelling": phoneticSpelling,
+                "PhoneticStandart": phoneticStandart
             },
             "options": {
                 "allowDuplicate": false
