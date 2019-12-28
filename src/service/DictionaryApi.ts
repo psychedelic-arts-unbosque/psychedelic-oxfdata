@@ -1,6 +1,7 @@
 import { DictionaryProps } from '../models/DictionaryProps';
 import ChromeApiRuntime from './ChromeApiRuntime';
 import DictionaryStore from '../stores/DictionaryStore';
+import { toast } from 'react-toastify';
 
 class DictionaryApi{
 
@@ -49,6 +50,14 @@ class DictionaryApi{
         if (xhr.readyState === 4) {
           if (xhr.status === 200) {
             DictionaryApi.dictionaryStore.setCurrentWord(JSON.parse(xhr.response));
+            toast(`The word has founded successfully ${props.word}`, {type: 'info'})
+          }else{
+            const response = JSON.parse(xhr.response);
+            if(response.hasOwnProperty('error')){
+              toast(response.error , {type: 'error'})
+            } else {
+              toast(xhr.responseText, {type: 'error'})
+            }
           }
         }
       };

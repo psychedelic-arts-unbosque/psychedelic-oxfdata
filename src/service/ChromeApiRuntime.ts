@@ -5,11 +5,6 @@ export default class ChromeApiRuntime {
   private port: any = null;
   private dictionaryStore = DictionaryStore.getInstance();
 
-  constructor(){
-    //this.port = chrome.runtime.connect({name: "flashford"});
-    //this.listenMessages(this.port);
-  }
-
   sendMessage(message: IMessage){
     if(this.port){
       this.port.postMessage(message);

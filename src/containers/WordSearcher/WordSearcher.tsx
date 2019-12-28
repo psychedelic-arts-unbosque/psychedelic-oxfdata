@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ReactElement, BaseProps } from 'react';
-import { FormGroup, Input, FormControl, InputLabel, Fab, Select, MenuItem, TextareaAutosize, TextField, Card, CardContent, Typography, CardActions, Button, IconButton, Icon } from '@material-ui/core';
+import { FormGroup, Input, FormControl, InputLabel, Fab, Select, MenuItem, CardContent, Typography, Card, TextField } from '@material-ui/core';
 import { WordSearcherWrapper, FormGroupWrapper, FormControlSized, ActionButton } from './styles';
 import SearchIcon from '@material-ui/icons/Search';
 import ImageSearchIcon from '@material-ui/icons/ImageSearch';
@@ -18,6 +18,7 @@ import BlockIcon from '@material-ui/icons/Block';
 import CustomizedDialogs from '../ImageDialog/ImageDialog';
 import MusicDialog from '../MusicDialog/MusicDialog';
 import AnkiWordStore from '../../stores/AnkiWordStore';
+import IconButton from '@material-ui/core/IconButton';
 
 type WordSearcherProps =   BaseProps & {
     word?: IData;
@@ -78,50 +79,26 @@ const WordSearcher = observer(({
     save
 }: WordSearcherProps): ReactElement => {
 
-    const [wordValue, setWordValue] = React.useState('');
-    const [lexicalValue, setLexicalValue] = React.useState('');
-    const [meaning, setMeaning] = React.useState('');
-    const [example, setExample] = React.useState('');
-    const [pronunciation, setPronunciation] = React.useState<IPronunciation[]>();
-    const [audio, setAudio] = React.useState<IPronunciation>();
-    const [phoneticNotation, setPhoneticNotation] = React.useState('');
     const [open, setOpen] = React.useState(false);
     const [openMusic, setMusicOpen] = React.useState(false);
     const [wordSearcherViewModel, setWordSearcherViewModel] = React.useState(new WordSearcherViewModel())
 
-    React.useEffect(()=> {
-        ankiWordStore.word = wordValue;
-    }, [wordValue]);
-    React.useEffect(()=> {
-        ankiWordStore.lexicalCategory = lexicalValue;
-    }, [lexicalValue]);
-    React.useEffect(()=> {
-        ankiWordStore.meaning = meaning;
-    }, [meaning]);
-    React.useEffect(()=> {
-        if(audio){
-            ankiWordStore.audio =  audio.audioFile;
-            ankiWordStore.phoneticSpelling = audio.phoneticSpelling;
-            ankiWordStore.phoneticStandart = audio.phoneticNotation;
-            setPhoneticNotation(audio.phoneticNotation);
-        }
-    }, [audio]);
+    const ankiWordStore = AnkiWordStore.getInstance();
 
     React.useEffect(() => {
-        if(lexicalValue.length > 0 && getLexicalValues()){
-            const iLexicalEntryData: ILexicalEntryData = getLexicalValues().find((current: ILexicalEntryData) => current.valueEntryCategory === lexicalValue);
+        if(ankiWordStore.lexicalCategory.length > 0 && getLexicalValues()){
+            const iLexicalEntryData: ILexicalEntryData = getLexicalValues().find((current: ILexicalEntryData) => current.valueEntryCategory ===     
+            ankiWordStore.lexicalCategory);
             const senses = iLexicalEntryData.entries ? iLexicalEntryData.entries[0].senses: undefined;
             if(senses){
                 const senseDefinitions: string[][] = senses.map((currentSense: ISense) => currentSense.definitions);
                 const senseData: string[] = senseDefinitions.reduce((previous,current ) => previous.concat(current));
                 const senseMeaning = senseData.reduce((previous,current) => current ? previous.concat(`\n${current}`): previous);
-                setMeaning(senseMeaning);
+                ankiWordStore.handleMeaning(senseMeaning);
             }
-            setPronunciation(iLexicalEntryData.pronunciations);
+            ankiWordStore.handlePronunciationChange(iLexicalEntryData.pronunciations);
         }
-    },[lexicalValue])
-
-    const ankiWordStore= AnkiWordStore.getInstance();
+    },[ankiWordStore.lexicalCategory])
 
     return(
         <WordSearcherWrapper>
@@ -131,17 +108,16 @@ const WordSearcher = observer(({
                         <InputLabel htmlFor="flashford-word">Search word ...</InputLabel>
                         <Input 
                             id="flashford-word"
-                            value={wordValue} 
-                            onChange={(event) => {setWordValue(event.target.value)
-                                ankiWordStore.word = wordValue;}}
+                            value={ankiWordStore.word} 
+                            onChange={(event) => ankiWordStore.handleWordChange(event.target.value)}
                         />
                     </FormControlSized>
                     <Fab 
                         aria-label="search" 
                         size="medium"
-                        disabled={!(wordValue.length > 0)}
-                        onClick={() => getWord(wordValue,wordSearcherViewModel)}
-                        >
+                        disabled={!(ankiWordStore.word.length > 0)}
+                        onClick={() => getWord(ankiWordStore.word,wordSearcherViewModel)}
+                    >
                        <SearchIcon color="primary"></SearchIcon>
                     </Fab>
                 </FormGroup>
@@ -150,9 +126,8 @@ const WordSearcher = observer(({
                         <InputLabel  htmlFor="flasford-select-lexical">Lexical type</InputLabel>
                         <Select
                             id="flasford-select-lexical"
-                            value={lexicalValue}
-                            onChange={(event: React.ChangeEvent<{ value: unknown }>) => {setLexicalValue(event.target.value as string)
-                                ankiWordStore.lexicalCategory = lexicalValue;}}
+                            value={ankiWordStore.lexicalCategory}
+                            onChange={(event: React.ChangeEvent<{ value: unknown }>) => ankiWordStore.handleLexicalCategory(event.target.value as string)}
                         >
                             {generateMenuOptionItems()}
                         </Select>
@@ -162,10 +137,8 @@ const WordSearcher = observer(({
                         <InputLabel htmlFor="flashford-lexical">Introduce the lexical value ...</InputLabel>
                         <Input
                             id="flashford-lexical"
-                            value={lexicalValue}
-                            onChange={(event) => {setLexicalValue(event.target.value)
-                                ankiWordStore.lexicalCategory = lexicalValue;
-                            }}
+                            value={ankiWordStore.lexicalCategory}
+                            onChange={(event) => ankiWordStore.handleLexicalCategory(event.target.value)}
                         />
                     </FormControl>
                     }
@@ -177,9 +150,8 @@ const WordSearcher = observer(({
                         rows={4}
                         rowsMax="7"
                         variant="outlined"
-                        value={meaning}
-                        onChange={(event) => {setMeaning(event.target.value)
-                            ankiWordStore.meaning = meaning;}}
+                        value={ankiWordStore.meaning}
+                        onChange={(event) => ankiWordStore.handleMeaning(event.target.value)}
                     />
                 </FormControl>
                 
@@ -191,9 +163,8 @@ const WordSearcher = observer(({
                         rows={4}
                         rowsMax="7"
                         variant="outlined"
-                        value={example}
-                        onChange={(event) => {setExample(event.target.value)
-                            ankiWordStore.examples = example;}}
+                        value={ankiWordStore.examples}
+                        onChange={(event) => ankiWordStore.handleExamples(event.target.value)}
                     />
                 </FormControl>
                 <Flexbox flexDirection="row" justifyContent="space-evenly">
@@ -204,15 +175,14 @@ const WordSearcher = observer(({
                     >
                         Choose image
                     </ActionButton>
-                    {pronunciation  ? 
+                    {ankiWordStore.pronunciation  ? 
                     <FormControl margin="normal" style={{width: "40%"}}>
                     <InputLabel htmlFor="flashford-audio">Choose the audio</InputLabel>
                         <Select id="flashford-audio"
-                                value={phoneticNotation}
-                                onChange={(event: React.ChangeEvent<{ value: unknown }>) =>{ setAudio(pronunciation.find((currentPronun) =>
-                                 currentPronun.phoneticNotation === event.target.value))}}
+                                value={ankiWordStore.audioData}
+                                onChange={(event: React.ChangeEvent<{ value: unknown }>) => ankiWordStore.handleSpellingSchange(event.target.value)}
                                 >
-                            {generateMenuAudioItems(pronunciation)}
+                            {generateMenuAudioItems(ankiWordStore.pronunciation)}
                         </Select>
                     </FormControl>: 
                     <ActionButton

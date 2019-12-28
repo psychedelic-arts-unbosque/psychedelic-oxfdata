@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import ImageUploader from 'react-images-upload';
 import { ReactElement } from 'react';
 import AnkiWordStore from '../../stores/AnkiWordStore';
+import { toast } from 'react-toastify';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -73,9 +74,7 @@ export default function CustomizedDialogs(
 
   const [pictures, setPictures] = React.useState<File[]>([]);
 
-  const NOT_IMAGE = "There is not available images yet!";
   const TOO_LARGE = "Image too large";
-  const TOO_SMALL = "Image too small";
 
   const onDrop = (pictures: File[]) => {
     if(pictures){
@@ -113,12 +112,15 @@ export default function CustomizedDialogs(
                 onChange={onDrop}
                 imgExtension={['.jpg', '.gif', '.png', '.gif']}
                 singleImage={true}
-                maxFileSize={5242880}/>
+                maxFileSize={5242880}
+                fileSizeError={TOO_LARGE}
+                />
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={() => {
             save();
             handleClose()
+            toast('Image saved successfully', {type: 'success'})
             }} color="primary">
             Save changes
           </Button>

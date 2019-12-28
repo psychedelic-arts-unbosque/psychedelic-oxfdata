@@ -1,6 +1,7 @@
-import { observable, computed } from 'mobx';
+import { observable } from 'mobx';
 import IAnkiNote from '../models/IAnkiNote';
 import AnkiApi from '../service/AnkiApi';
+import IPronunciation from '../models/IPronunciation';
 
 export default class AnkiWordStore {
     private static instance: AnkiWordStore;
@@ -37,6 +38,12 @@ export default class AnkiWordStore {
     @observable
     image: string = ''
 
+    @observable
+    pronunciation: IPronunciation[];
+
+    @observable
+    audioData: IPronunciation = undefined;
+
     saveCurrentWord(){
         const iAnkiNote: IAnkiNote = {
             Word: this.word,
@@ -50,4 +57,51 @@ export default class AnkiWordStore {
         }
         AnkiApi.addNote(iAnkiNote);
     }
+
+    clearWord(){
+        this.word = '';
+        this.lexicalCategory = '';
+        this.meaning = '';
+        this.examples = '';
+        this.audio = '';
+        this.image = '';
+        this.phoneticSpelling = '';
+        this.phoneticStandart = '';
+        this.pronunciation = undefined;
+        this.audioData = undefined;
+    }
+
+    handleWordChange(word: string){
+        this.word = word;
+    }
+    
+    handleLexicalCategory(lexicalCategory: string){
+        this.lexicalCategory = lexicalCategory;
+    }
+
+    handleMeaning(meaning: string){
+        this.meaning = meaning;
+    }
+
+    handleExamples(examples: string){
+        this.examples = examples;
+    }
+
+    handlePronunciationChange(pronunciation: IPronunciation[]){
+        this.pronunciation = pronunciation;
+    }
+
+    handlePhoneticNotationChange(phoneticNotation: string){
+        this.phoneticSpelling = phoneticNotation;
+    }
+
+    handleSpellingSchange(value: any){
+        this.audioData = this.pronunciation.find((currentPronun) =>
+        currentPronun.phoneticNotation === value);
+        this.audio =  this.audioData.audioFile;
+        this.phoneticSpelling = this.audioData.phoneticSpelling;
+        this.phoneticStandart = this.audioData.phoneticNotation;
+    }
+
+
 }

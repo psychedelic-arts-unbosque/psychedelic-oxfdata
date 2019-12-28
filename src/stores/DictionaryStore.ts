@@ -57,7 +57,9 @@ class DictionaryStore {
             .reduce((previous: ILexicalEntryData[], currentValue:ILexicalEntryData[]) =>
             previous.concat(currentValue));            
         }
-        return null;
+        return Array.from(lexicalMapEntries.values())
+        .reduce((previous: ILexicalEntryData[], currentValue:ILexicalEntryData[]) =>
+        previous.concat(currentValue));
     }
     
     @computed
@@ -74,6 +76,11 @@ class DictionaryStore {
     setCurrentWord(word: IData){
         this.word = word;
         this.words.push(word);
+    }
+
+    @action.bound
+    clearWord(){
+        this.word = undefined;
     }
 }
 

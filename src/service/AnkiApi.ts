@@ -1,21 +1,30 @@
 import IAnkiNote from '../models/IAnkiNote';
 import IAnkiRequestNote from '../models/IAnkiRequestNote';
+import { toast } from 'react-toastify';
+import { IAnkiResponse } from '../models/IAnkiResponse';
+import AnkiWordStore from '../stores/AnkiWordStore';
+import DictionaryStore from '../stores/DictionaryStore';
 export default class AnkiApi {
 
-    static invoke(action: any, version: any, params={}) {
-        return new Promise((resolve, reject) => {
+    static invoke(action: any, version: any, params={}):  Promise<any> {
+        return new Promise<IAnkiResponse>((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-            xhr.addEventListener('error', () => reject('failed to issue request'));
+            xhr.addEventListener('error', () => {
+                toast(`An unexpected error has occured`, {type: 'error'});
+                reject('failed to issue request')});
             xhr.addEventListener('load', () => {
                 try {
                     const response = JSON.parse(xhr.responseText);
-                    if (Object.getOwnPropertyNames(response).length != 2) {
+                    if (Object.getOwnPropertyNames(response).length !== 2) {
+                        toast(`response has an unexpected number of fields`, {type: 'error'});
                         throw 'response has an unexpected number of fields';
                     }
                     if (!response.hasOwnProperty('error')) {
+                        toast(`response is missing required error field`, {type: 'error'});
                         throw 'response is missing required error field';
                     }
                     if (!response.hasOwnProperty('result')) {
+                        toast(`response is missing required result field`, {type: 'error'});
                         throw 'response is missing required result field';
                     }
                     if (response.error) {
@@ -79,8 +88,15 @@ export default class AnkiApi {
             }
         }
 
-                
-        const result = await AnkiApi.invoke(request.action,request.version, request.params);
-        console.log(`Note added: ${result}`);
+        try{
+            const result: IAnkiResponse = await AnkiApi.invoke(request.action,request.version, request.params);
+            toast(`Note added: ${result}`, {
+                type: "success"    
+            });
+            AnkiWordStore.getInstance().clearWord();
+            DictionaryStore.getInstance().clearWord();
+        } catch (error ){
+            toast(error, {type: 'error'});
+        }
     }
 }

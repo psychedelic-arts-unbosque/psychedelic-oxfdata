@@ -12,6 +12,7 @@ import ImageUploader from 'react-images-upload';
 import { ReactElement } from 'react';
 import { FormControl, InputLabel, Input } from '@material-ui/core';
 import AnkiWordStore from '../../stores/AnkiWordStore';
+import { toast } from 'react-toastify';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -117,12 +118,17 @@ const save = () =>{
                     reader.onload = (e: ProgressEvent<FileReader>) => {
                         if(e.target) {
                           setAudio(e.target.result);
+                          toast(`The audio was added sucessfully`, {type: 'success'});
+                        }else{
+                          toast(`The audio can't be saved because the file coudn't be read`, {type: "error"})
                         }
                     };
                     if(fileEvent && fileEvent.length > 0) {
                         const file = fileEvent.pop();
                         if(file){ 
                           reader.readAsDataURL(file);
+                        }{
+                          toast(`There is not a valid audio file please review it`, {type: "error"})
                         }
                     }
 

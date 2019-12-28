@@ -1,10 +1,11 @@
 import * as React from "react";
 import { ReactElement } from 'react';
-import { Dialog, Button, DialogTitle, DialogContentText, DialogContent, DialogActions, Container, CardActions, CardContent, Card } from '@material-ui/core';
+import {  Button, CardActions, CardContent, Card } from '@material-ui/core';
 import WordSearcher from "../WordSearcher/WordSearcher";
 import { observer } from 'mobx-react';
 import DictionaryStore from '../../stores/DictionaryStore';
 import AnkiWordStore from '../../stores/AnkiWordStore';
+import { toast } from 'react-toastify';
 
 const DictionaryContainer = observer((): ReactElement => {
 
@@ -22,9 +23,9 @@ const DictionaryContainer = observer((): ReactElement => {
             <Button onClick={() => {
               if(ankiWordStore.word && ankiWordStore.lexicalCategory && ankiWordStore.meaning){
                 ankiWordStore.saveCurrentWord();
-            }else{
-                alert("Please fill all fields")
-            }
+              }else{
+                toast(`Please fill all the fields before save the current word`, {type: 'warning'})
+              }
               }} variant="contained" color="primary" autoFocus fullWidth>
               Save
           </Button>
